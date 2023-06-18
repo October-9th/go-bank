@@ -41,7 +41,7 @@ jobs:
       - name: Load .env variables
         uses: falti/dotenv-action@v1.0.4
       - name: Run migration
-        run: migrate -path database/migration -database "postgres://postgres:091002@localhost:5432/simple_banksslmode=disable" -verbose up
+        run: migrate -path database/migration -database "postgres://postgres:091002@localhost:5432/simple_bank?sslmode=disable" -verbose up
       - name: Test
         env:
           dbDriver: ${{ env.DB_DRIVER }}
