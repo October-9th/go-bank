@@ -13,8 +13,8 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: 091002
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: 0910
           POSTGRES_DB: simple_bank
         options: >-
           --health-cmd pg_isready
