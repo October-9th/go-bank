@@ -40,7 +40,7 @@ jobs:
         id: go
 
       - name: Check PostgreSQL connection
-        run: psql -h localhost -U postgres -p 5432 -W -c "SELECT version();"
+        run: psql -h localhost -U postgres -p 5432 -W 091002 -c "SELECT version();"
 
       - name: Load .env variables
         uses: falti/dotenv-action@v1.0.4
