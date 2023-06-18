@@ -25,6 +25,6 @@ jobs:
 
       - name: Test
         env:
-          DB_DRIVER: ${{ env.DB_DRIVER }}
-          DB_SOURCE: ${{ env.DB_SOURCE }}
+          dbDriver: ${{ env.DB_DRIVER }}
+          dbSource: ${{ env.DB_SOURCE }}
         run: go test -v -cover ./database/sqlc
