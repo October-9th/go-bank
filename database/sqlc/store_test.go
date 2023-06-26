@@ -2,6 +2,7 @@ package sqlc
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"testing"
 
@@ -9,15 +10,14 @@ import (
 )
 
 func TestTransferTx(t *testing.T) {
-	store := NewStore(testDB)
 
+	store := NewStore(testDB)
 	// Create account for transaction
 	account_1, account_2 := CreateRandomAccount(t), CreateRandomAccount(t)
-	log.Println(">> Before: ", account_1.Balance, account_2.Balance)
+	fmt.Println(">> Before: ", account_1.Balance, account_2.Balance)
 	// Run n concurrent transfer transactions
 	n := 10
-	amount := int64(10)
-
+	amount := int64(5)
 	// Declare a channel to receive the TransferTx error
 	errors := make(chan error)
 
@@ -33,8 +33,7 @@ func TestTransferTx(t *testing.T) {
 
 		// asign a name for the transaction and pass it into the TransferTx function
 		go func() {
-			ctx := context.Background()
-			result, err := store.TransferTx(ctx, TransferTxParams{
+			result, err := store.TransferTx(context.Background(), TransferTxParams{
 				FromAccountID: account_1.ID,
 				ToAccountID:   account_2.ID,
 				Amount:        amount,

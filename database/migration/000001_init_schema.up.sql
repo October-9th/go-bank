@@ -35,7 +35,7 @@ COMMENT ON COLUMN "entries"."amount" IS 'can be positive or negative';
 
 COMMENT ON COLUMN "transfer"."amount" IS 'must be positive';
 
-ALTER TABLE "entries" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id");
+ALTER TABLE "entries" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "transfer" ADD FOREIGN KEY ("from_account_id") REFERENCES "accounts" ("id");
 

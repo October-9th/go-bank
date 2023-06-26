@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/joho/godotenv"
+	"github.com/October-9th/simple-bank/util"
 	_ "github.com/lib/pq"
 )
 
@@ -14,15 +14,16 @@ var testQueries *Queries
 var testDB *sql.DB
 
 func TestMain(m *testing.M) {
-	err := godotenv.Load("../../.env")
+
+	config, err := util.LoadConfig("../..")
 	if err != nil {
-		log.Println("Couldn't load env file")
+		log.Fatal("Couldn't load config file: ", err)
 	}
-	dbDriver, dbSource := os.Getenv("DB_DRIVER"), os.Getenv("DB_SOURCE")
-	testDB, err = sql.Open(dbDriver, dbSource)
+	testDB, err = sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
 		log.Fatal("Couldn't connect to database: ", err)
 	}
 	testQueries = New(testDB)
 	os.Exit(m.Run())
+
 }

@@ -6,17 +6,23 @@ import (
 	"fmt"
 )
 
-// Store provides all function to execute database queries and transactions
-type Store struct {
+// Store interface provides all function to execute database queries and transactions
+type Store interface {
+	Querier
+	TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error)
+}
+
+// Store provides all function to execute SQL queries and transactions
+type SQLStore struct {
 	*Queries
 	db *sql.DB // Required for creating database transactions
 }
 
 // NewStore creates a new store
-func NewStore(db *sql.DB) *Store {
-	return &Store{
-		db:      db,
+func NewStore(db *sql.DB) Store {
+	return &SQLStore{
 		Queries: New(db),
+		db:      db,
 	}
 }
 
@@ -24,26 +30,24 @@ func NewStore(db *sql.DB) *Store {
 // then it will start a new db transaction -> create a new query object with that transaction
 // and call the callback function with the created query -> finally commit or rollback the transaction
 // based on the error returnd by the callback function
-func (s *Store) execTx(ctx context.Context, fn func(*Queries) error) error {
+func (s *SQLStore) execTx(ctx context.Context, fn func(*Queries) error) error {
 	tx, err := s.db.BeginTx(ctx, nil)
+
 	if err != nil {
 		return err
 	}
-	// Call New function with the created transaction and get back a new query object
+
 	q := New(tx)
-	// When we have the query within transaction we can now call the input function with that query
+
 	err = fn(q)
-	// if the error is not nil, then we have to roll back the transaction
+
 	if err != nil {
 		if rbErr := tx.Rollback(); rbErr != nil {
-			// if the rollback error is not nil
-			// then we should combine them into 1 single error before returning
 			return fmt.Errorf("tx error: %v, roll back error: %v", err, rbErr)
 		}
 		return err
 	}
-	// finally if all the operation in the transaction is successful
-	// commit it
+
 	return tx.Commit()
 }
 
@@ -65,7 +69,7 @@ type TransferTxResult struct {
 
 // TransferTx performs a money transfer from one account to another
 // It creates a transfer record, add account entries and update account's balance within a single database transaction
-func (s *Store) TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
+func (s *SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
 	var txResult TransferTxResult
 
 	err := s.execTx(ctx, func(q *Queries) error {
@@ -101,16 +105,10 @@ func (s *Store) TransferTx(ctx context.Context, arg TransferTxParams) (TransferT
 
 		if arg.FromAccountID < arg.ToAccountID {
 			txResult.FromAccount, txResult.ToAccount, err = UpdateAccountBalance(arg.FromAccountID, arg.ToAccountID, -arg.Amount, arg.Amount, ctx, q)
-			if err != nil {
-				return err
-			}
 		} else {
 			txResult.ToAccount, txResult.FromAccount, err = UpdateAccountBalance(arg.ToAccountID, arg.FromAccountID, arg.Amount, -arg.Amount, ctx, q)
-			if err != nil {
-				return err
-			}
 		}
-		return nil
+		return err
 	})
 	return txResult, err
 
