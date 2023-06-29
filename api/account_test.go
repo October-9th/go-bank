@@ -96,7 +96,7 @@ func TestCreateAccountAPI(t *testing.T) {
 			// Build stubs for api testing
 			tc.buildStubs(store)
 			// Start test server and send request
-			server := NewServer(store)
+			server := newTestSever(t, store)
 
 			// Don't need to start the real http server, instead can just use the Recorder feature
 			// of the httptest package to record the response of the API request
@@ -204,7 +204,7 @@ func TestGetAcocuntAPI(t *testing.T) {
 			// Build stubs for api testing
 			tc.buildStubs(store)
 			// Start test server and send request
-			server := NewServer(store)
+			server := newTestSever(t, store)
 
 			// Don't need to start the real http server, instead can just use the Recorder feature
 			// of the httptest package to record the response of the API request
@@ -327,7 +327,7 @@ func TestGetListAccount(t *testing.T) {
 			store := mockdb.NewMockStore(ctrl)
 			tc.buildStubs(store)
 
-			server := NewServer(store)
+			server := newTestSever(t, store)
 			recorder := httptest.NewRecorder()
 
 			url := "/api/v1/accounts"

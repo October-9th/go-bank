@@ -21,8 +21,10 @@ func main() {
 	}
 
 	store := sqlc.NewStore(conn)
-	server := api.NewServer(store)
-
+	server, err := api.NewServer(config, store)
+	if err != nil {
+		log.Fatal("Couldn't create server: ", err)
+	}
 	log.Println("HTTP server served at:", config.ServerAddress)
 	if err = server.Start(config.ServerAddress); err != nil {
 		log.Fatal("Couldn't start server: ", err)
