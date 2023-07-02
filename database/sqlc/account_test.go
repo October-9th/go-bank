@@ -47,18 +47,21 @@ func TestGetAccount(t *testing.T) {
 	require.WithinDuration(t, account.CreatedAt, account_test.CreatedAt, time.Second)
 }
 func TestListAccounts(t *testing.T) {
+	var lastAccount Account
 	for i := 0; i < 10; i++ {
-		CreateRandomAccount(t)
+		lastAccount = CreateRandomAccount(t)
 	}
 	listAccounts, err := testQueries.ListAccounts(context.Background(), ListAccountsParams{
+		Owner:  lastAccount.Owner,
 		Limit:  5,
-		Offset: 5,
+		Offset: 0,
 	})
 	require.NoError(t, err)
-	require.Len(t, listAccounts, 5)
+	require.NotEmpty(t, listAccounts)
 
 	for _, account := range listAccounts {
 		require.NotEmpty(t, account)
+		require.Equal(t, lastAccount.Owner, account.Owner)
 	}
 }
 

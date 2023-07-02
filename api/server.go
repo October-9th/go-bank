@@ -46,18 +46,21 @@ func (server *Server) setupRouter() {
 	router.SetTrustedProxies(nil)
 
 	// Routes for handler account api request
-	router.POST("/api/v1/accounts", server.createAccount)
-	router.GET("/api/v1/accounts/:id", server.getAccount)
-	router.GET("/api/v1/accounts", server.getListAccount)
-	router.PUT("/api/v1/accounts", server.updateAccount)
-	router.DELETE("/api/v1/accounts/:id", server.deleteAccount)
-
-	// Routes for hanlder transfer api request
-	router.POST("/api/v1/transfers", server.createTransfer)
-
-	// Routes for handler usr api request
 	router.POST("/api/v1/users", server.CreateUser)
 	router.POST("/api/v1/users/login", server.loginUser)
+
+	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
+
+	authRoutes.POST("/api/v1/accounts", server.createAccount)
+	authRoutes.GET("/api/v1/accounts/:id", server.getAccount)
+	authRoutes.GET("/api/v1/accounts", server.getListAccount)
+	authRoutes.PUT("/api/v1/accounts", server.updateAccount)
+	authRoutes.DELETE("/api/v1/accounts/:id", server.deleteAccount)
+
+	// Routes for hanlder transfer api request
+	authRoutes.POST("/api/v1/transfers", server.createTransfer)
+
+	// Routes for handler usr api request
 
 	server.router = router
 
