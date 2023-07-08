@@ -18,14 +18,9 @@ type Config struct {
 
 // LoadConfig read configuration from file environment variable
 func LoadConfig(path string) (config Config, err error) {
-	// absPath, err := filepath.Abs(path)
-	// if err != nil {
-	// 	return
-	// }
-	// println(absPath)
-	// viper.AddConfigPath(absPath)
-	viper.SetConfigFile("D:\\Studying\\go\\Simple Bank Project\\.env")
-	// viper.SetConfigType("env")
+	viper.AddConfigPath(path)
+	viper.SetConfigName("app")
+	viper.SetConfigType("env")
 
 	viper.AutomaticEnv()
 
