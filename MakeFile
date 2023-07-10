@@ -1,5 +1,5 @@
 postgres:
-	docker run --name postgres -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=091002 -d postgres
+	docker run --name simplebank --network bank-network -p 8080:8080 -e DB_SOURCE="postgres://root:091002@postgres:5432/simple_bank?sslmode=disable" simplebank:latest
 
 network:
 	docker network create bank-network
