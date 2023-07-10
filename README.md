@@ -35,12 +35,13 @@ This is the bank service that will provide APIs for the Frontend to do the follo
   ```
 
 - [Sqlc](https://github.com/kyleconroy/sqlc#installation)
+  with powershell
 
 ```powershell
     docker run --rm -v $(pwd):/src -w /src kjconroy/sqlc generate
 ```
 
-or
+or cmd
 
 ```CMD
     docker run --rm -v "%cd%:/src" -w /src kjconroy/sqlc generate
