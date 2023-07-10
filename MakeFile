@@ -3,6 +3,13 @@ postgres:
 
 network:
 	docker network create bank-network
+
+db_docs:
+	dbdocs build doc/db.doml
+
+db_schema:
+	dbml2sql --postgres -o doc/schema.sql doc/db.dbml
+
 createdb:
 	docker exec -it postgres createdb --username=root --owner=root simple_bank
 
@@ -11,6 +18,9 @@ dropdb:
 
 Start:
 	docker start postgres
+
+new_migration:
+	migrate create -ext sql -dir db/migration -seq $(name)
 
 migrateup:
 	migrate -path database/migration -database "postgres://root:091002@localhost:5432/simple_bank?sslmode=disable" -verbose up
@@ -37,4 +47,4 @@ server:
 	go run main.go
 mock:
 	mockgen -package mockdb -destination  database/mock/store.go github.com/October-9th/simple-bank/database/sqlc Store
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test server debug migratedown1 migrateup1 network
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc test server debug migratedown1 migrateup1 network db_docs db_schema new_migration
