@@ -48,7 +48,7 @@ func (server *Server) setupRouter() {
 	// Routes for handler account api request
 	router.POST("/api/v1/users", server.CreateUser)
 	router.POST("/api/v1/users/login", server.loginUser)
-
+	router.POST("/api/v1/users/renew_access", server.renewAccessToken)
 	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
 
 	authRoutes.POST("/api/v1/accounts", server.createAccount)

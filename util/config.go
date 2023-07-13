@@ -9,11 +9,12 @@ import (
 )
 
 type Config struct {
-	DBDriver            string        `mapstructure:"DB_DRIVER"`
-	DBSource            string        `mapstructure:"DB_SOURCE"`
-	ServerAddress       string        `mapstructure:"SERVER_ADDRESS"`
-	TokenSymmectricKey  string        `mapstructure:"TOKEN_SYMMETRIC_KEY"`
-	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
+	DBDriver             string        `mapstructure:"DB_DRIVER"`
+	DBSource             string        `mapstructure:"DB_SOURCE"`
+	ServerAddress        string        `mapstructure:"SERVER_ADDRESS"`
+	TokenSymmectricKey   string        `mapstructure:"TOKEN_SYMMETRIC_KEY"`
+	AccessTokenDuration  time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
+	RefreshTokenDuration time.Duration `mapstructure:"REFRESH_TOKEN_DURATION"`
 }
 
 // LoadConfig read configuration from file environment variable
