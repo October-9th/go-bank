@@ -36,7 +36,6 @@ migratedown1:
 
 sqlc:
 	docker run --rm -v "$(CURDIR):/src" -w /src kjconroy/sqlc generate
-
 sqlc-pwsh:
 	docker run --rm -v "$(pwd):/src" -w /src kjconroy/sqlc generate
 
@@ -48,5 +47,8 @@ server:
 
 mock:
 	mockgen -package mockdb -destination  database/mock/store.go github.com/October-9th/simple-bank/database/sqlc Store
-
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test server debug migratedown1 migrateup1 network db_docs db_schema new_migration
+proto:
+	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
+    --go-grpc_out=pb --go-grpc_opt=paths=source_relative \
+    proto/*.proto
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc test server debug migratedown1 migrateup1 network db_docs db_schema new_migration proto
