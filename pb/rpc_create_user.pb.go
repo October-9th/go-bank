@@ -84,7 +84,7 @@ func (x *CreateUserRequest) GetEmail() string {
 	return ""
 }
 
-func (x *CreateUserRequest) GetPassword() string {
+func (x *CreateUserRequest) 	GetPassword() string {
 	if x != nil {
 		return x.Password
 	}

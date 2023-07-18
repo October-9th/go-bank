@@ -14,6 +14,7 @@ This is the bank service that will provide APIs for the Frontend to do the follo
 - [TablePlus](https://tableplus.com/)
 - [Golang](https://golang.org/)
 - [Scoop](https://scoop.sh/)
+- [evans](https://github.com/ktr0731/evans)
 - [Migrate](https://github.com/golang-migrate/migrate/tree/master/cmd/migrate)
 
   ```bash
@@ -135,10 +136,34 @@ make new_migration name=<migration_name>
 
 ### How to run
 
-- Run the server:
+- Run HTTP server:
 
 ```bash
 make server
+```
+
+- Run gRPC server
+
+```bash
+make server
+```
+
+- Create a connection to gRPC server
+
+```bash
+make evans
+```
+
+- List all service of gRPC server after connecting to gRPC server successfully
+
+```bash
+show service
+```
+
+- Call for the specific method
+
+```bash
+call [RPC_method]
 ```
 
 - Run test:
