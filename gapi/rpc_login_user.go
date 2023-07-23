@@ -3,13 +3,11 @@ package gapi
 import (
 	"context"
 	"database/sql"
-	"strings"
 
 	"github.com/October-9th/simple-bank/database/sqlc"
 	"github.com/October-9th/simple-bank/pb"
 	"github.com/October-9th/simple-bank/util"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -42,17 +40,15 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 	}
 
 	// Handle metadata from the context
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return nil, status.Errorf(codes.Internal, "couldn't get metadata from context")
-	}
+	metadata := server.extractMetadata(ctx)
+
 	// Insert new user session to database
 	session, err := server.store.CreateSession(ctx, sqlc.CreateSessionParams{
 		ID:           refreshPayload.ID,
 		Username:     user.Username,
 		RefreshToken: refreshToken,
-		UserAgent:    strings.Join(md.Get("user-agent"), ""),
-		ClientIp:     strings.Join(md.Get("x-real-ip"), ""),
+		UserAgent:    metadata.UserAgent,
+		ClientIp:     metadata.ClientIP,
 		IsBlocked:    false,
 		ExpiresAt:    refreshPayload.ExpiredAt,
 	})

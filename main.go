@@ -9,11 +9,14 @@ import (
 
 	"github.com/October-9th/simple-bank/api"
 	"github.com/October-9th/simple-bank/database/sqlc"
+	_ "github.com/October-9th/simple-bank/doc/statik"
 	"github.com/October-9th/simple-bank/gapi"
 	"github.com/October-9th/simple-bank/pb"
 	"github.com/October-9th/simple-bank/util"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	_ "github.com/lib/pq"
+	"github.com/rakyll/statik/fs"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -77,6 +80,14 @@ func runGatewayServer(config util.Config, store sqlc.Store) {
 
 	// Convert those requests into gRPC format, reroute to grpc mux
 	mux.Handle("/", grpcMux)
+
+	// Define new file server
+	statikFs, err := fs.New()
+	if err != nil {
+		log.Fatal("couldn't create statik fs: ", err)
+	}
+	swaggerHandler := http.StripPrefix("/swagger/", http.FileServer(statikFs))
+	mux.Handle("/swagger/", swaggerHandler)
 
 	// Define the net  listener
 	listener, err := net.Listen("tcp", config.HTTPServerAddress)
